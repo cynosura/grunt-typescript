@@ -160,6 +160,7 @@ module.exports = function (grunt) {
 
         this.files.forEach(function (f) {
             var dest = f.dest,
+                tscOverride = f.tsc
                 options = that.options(),
                 extension = that.data.extension,
                 files = [];
@@ -171,7 +172,7 @@ module.exports = function (grunt) {
                 files.push(filepath);
             });
 
-            compile(files, dest, grunt.util._.clone(options), extension);
+            compile(files, dest, grunt.util._.clone(options), extension, tscOverride);
             if (grunt.task.current.errorCount) {
                 return false;
             }
@@ -182,10 +183,10 @@ module.exports = function (grunt) {
         }
     });
 
-    var compile = function (srces, destPath, options, extension) {
+    var compile = function (srces, destPath, options, extension, tscOverride) {
         var currentPath = path.resolve("."),
             basePath = options.base_path,
-            typeScriptBinPath = resolveTypeScriptBinPath(currentPath, 0),
+            typeScriptBinPath = tscOverride || resolveTypeScriptBinPath(currentPath, 0),
             typeScriptPath = path.resolve(typeScriptBinPath, "typescript.js"),
             libDPath = path.resolve(typeScriptBinPath, "lib.d.ts"),
             outputOne = !!destPath && path.extname(destPath) === ".js";
